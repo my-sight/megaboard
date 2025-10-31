@@ -1,0 +1,14 @@
+# Beispielkonfiguration für cloudflared auf dem Raspberry Pi
+# Ersetze <TUNNEL_NAME> durch den Wizard Wert.
+tunnel: <TUNNEL_NAME>
+credentials-file: /home/pi/.cloudflared/<TUNNEL_NAME>.json
+protocol: http2
+
+ingress:
+  - hostname: weber.mysight.net
+    service: http://localhost:3000
+  - hostname: tryout.mysight.net
+    service: http://localhost:3000
+  - hostname: www.mysight.net
+    service: http://localhost:8080
+  - service: http_status:404
