@@ -1,0 +1,117 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Tenant {
+  id           String      @id @default(uuid())
+  slug         String      @unique
+  name         String
+  isDemo       Boolean     @default(false)
+  boards       Board[]
+  memberships  Membership[]
+  domainRoutes DomainRoute[]
+  createdAt    DateTime    @default(now())
+  updatedAt    DateTime    @updatedAt
+}
+
+model Profile {
+  id        String       @id @default(uuid())
+  authId    String       @unique
+  email     String       @unique
+  fullName  String?
+  memberships Membership[]
+  createdAt DateTime     @default(now())
+  updatedAt DateTime     @updatedAt
+}
+
+enum BoardType {
+  PROJECT
+  TEAM
+}
+
+enum MembershipRole {
+  ADMIN
+  USER
+  GUEST
+}
+
+model Board {
+  id          String       @id @default(uuid())
+  tenant      Tenant       @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  tenantId    String
+  name        String
+  type        BoardType
+  projectCards ProjectCard[]
+  teamTasks    TeamTask[]
+  members     BoardMember[]
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
+}
+
+model Membership {
+  id        String          @id @default(uuid())
+  tenant    Tenant          @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  tenantId  String
+  profile   Profile         @relation(fields: [profileId], references: [id], onDelete: Cascade)
+  profileId String
+  role      MembershipRole
+  createdAt DateTime        @default(now())
+  updatedAt DateTime        @updatedAt
+}
+
+model BoardMember {
+  id        String    @id @default(uuid())
+  board     Board     @relation(fields: [boardId], references: [id], onDelete: Cascade)
+  boardId   String
+  profile   Profile   @relation(fields: [profileId], references: [id], onDelete: Cascade)
+  profileId String
+  role      String
+}
+
+model ProjectCard {
+  id          String    @id @default(uuid())
+  board       Board     @relation(fields: [boardId], references: [id], onDelete: Cascade)
+  boardId     String
+  title       String
+  priority    String
+  status      String
+  assigneeId  String?
+  dueDate     DateTime?
+  swimlane    String?
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+}
+
+model TeamTask {
+  id        String   @id @default(uuid())
+  board     Board    @relation(fields: [boardId], references: [id], onDelete: Cascade)
+  boardId   String
+  title     String
+  assignee  String?
+  status    String
+  dueDate   DateTime?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model ProjectEscalation {
+  id        String   @id @default(uuid())
+  board     Board    @relation(fields: [boardId], references: [id], onDelete: Cascade)
+  boardId   String
+  level     String
+  summary   String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model DomainRoute {
+  id        String   @id @default(uuid())
+  subdomain String   @unique
+  tenant    Tenant   @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  tenantId  String
+}

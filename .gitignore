@@ -1,0 +1,10 @@
+node_modules
+.next
+.env
+.env.local
+apps/web/node_modules
+apps/web/.next
+pnpm-lock.yaml
+package-lock.json
+yarn.lock
+playwright-report

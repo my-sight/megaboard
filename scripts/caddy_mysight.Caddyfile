@@ -1,0 +1,11 @@
+:8080 {
+  root * /var/www/mysight/www
+  file_server
+  log {
+    output file /var/log/caddy/mysight.log
+  }
+}
+
+:3000 {
+  reverse_proxy 127.0.0.1:3000
+}

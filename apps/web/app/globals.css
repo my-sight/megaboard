@@ -1,0 +1,19 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  color-scheme: light;
+}
+
+body {
+  background-color: theme("colors.surface");
+}
+
+.material-card {
+  @apply rounded-xl bg-white shadow-md border border-slate-100;
+}
+
+.material-section {
+  @apply flex flex-col gap-4 rounded-2xl bg-white/80 p-6 shadow-lg backdrop-blur;
+}
